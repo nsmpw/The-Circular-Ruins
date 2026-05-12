@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280, initial-scale=1.0, minimum-scale=1.0">
+  <title>. ݁₊ ⊹ . ݁ ⟡ ݁ . ⊹ ₊ ݁.</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url('telephone/phone2.jpg') center center / cover no-repeat fixed !important;
+      min-height: 100vh;
+    }
+    .center-question {
+      font-family: "DaVinci", cursive;
+      color: #cc0000;
+      font-size: 2.7vw;
+      text-align: center;
+      line-height: 1.4;
+      padding: 1.5vw;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+      font-weight: bold;
+      z-index: 10;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-transform: uppercase;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: 90%;
+    }
+    .nav-stack.question-active {
+      box-shadow: inset 0 0 60px 35px rgba(40, 22, 12, 0.9);
+      overflow: visible;
+      position: relative;
+    }
+    .center-question.fade-out {
+      opacity: 0;
+    }
+    .hole-letter {
+      font-family: "DaVinci", cursive;
+      font-size: 3.4vw;
+      color: #cc0000;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      font-weight: bold;
+    }
+    .hole.letter-active {
+      cursor: pointer;
+    }
+    .hole.letter-active:hover .hole-letter {
+      opacity: 0.6;
+    }
+    .hole.letter-clicked .hole-letter {
+      opacity: 1;
+      color: #b0b0b0;
+    }
+    .hole.letter-wrong .hole-letter {
+      opacity: 0.4;
+    }
+    .flip-h {
+      display: inline-block;
+      transform: scaleX(-1);
+    }
+    .hole {
+      box-shadow: inset 0 0 60px 35px rgba(40, 22, 12, 0.9);
+    }
+    .hole-visited {
+      opacity: 0.35;
+      filter: grayscale(0.8);
+      transition: opacity 0.4s ease, filter 0.4s ease;
+    }
+    .hole-visited:hover {
+      opacity: 0.7;
+      filter: grayscale(0);
+    }
+    .hole-letter.unlocked {
+      color: #cc0000;
+      font-size: 3.4vw;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(204, 0, 0, 0.4);
+      position: relative;
+      z-index: 10;
+    }
+    .timestamp {
+      position: fixed;
+      top: 2.2vw;
+      left: 5.5vw;
+      font-family: "DaVinci", cursive;
+      font-size: 1.9vw;
+      color: #cc0000;
+      z-index: 50;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <a class="info-btn" href="info.html">✦</a>
+  <div class="timestamp" id="timestamp"></div>
+
+  <!-- Dial -->
+  <div class="dial" id="dial">
+    <img src="12.png" draggable="false" alt="Dial">
+    <div class="hole" data-section="1"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="2"><span class="hole-letter flip-h"></span></div>
+    <div class="hole" data-section="3"><span class="hole-letter flip-h"></span></div>
+    <div class="hole" data-section="4"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="5"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="6"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="7"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="8"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="9"><span class="hole-letter"></span></div>
+    <div class="hole" data-section="10"><span class="hole-letter"></span></div>
+
+    <!-- Center circle -->
+    <div class="bottom-nav">
+      <div class="nav-stack question-active">
+        <div class="center-question" id="center-question">Dare to<br>begin ?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content"></div>
+  <script src="script.js"></script>
+  <script>
+    // Track total time on site — persists across pages via sessionStorage
+    var startKey = 'siteStartTime';
+    if (!sessionStorage.getItem(startKey)) {
+      sessionStorage.setItem(startKey, Date.now());
+    }
+
+    function updateElapsed() {
+      var start = parseInt(sessionStorage.getItem(startKey));
+      var elapsed = Math.floor((Date.now() - start) / 1000);
+      var h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+      var m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+      var s = String(elapsed % 60).padStart(2, '0');
+      document.getElementById('timestamp').textContent = h + ':' + m + ':' + s;
+    }
+    updateElapsed();
+    setInterval(updateElapsed, 1000);
+  </script>
+</body>
+</html>
