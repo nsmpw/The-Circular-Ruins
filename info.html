@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>✦</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Circular Ruins</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #fff;
+      overflow: hidden;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+      box-shadow:
+        inset 100px 0 100px -30px rgba(40, 22, 12, 0.7),
+        inset -100px 0 100px -30px rgba(40, 22, 12, 0.7),
+        inset 0 100px 100px -30px rgba(40, 22, 12, 0.7),
+        inset 0 -100px 100px -30px rgba(40, 22, 12, 0.7);
+    }
+    .info-page {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 8vw;
+    }
+    .info-page-content {
+      max-width: 55vw;
+      width: 90%;
+    }
+    body.dissolve .info-page {
+      transition: opacity 2s ease, filter 2s ease;
+      opacity: 0;
+      filter: blur(8px);
+    }
+    body.dissolve::after {
+      transition: opacity 2s ease;
+      opacity: 0;
+    }
+    body.dissolve {
+      background: transparent;
+      transition: background 3s ease;
+    }
+    .dial-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 2.5s ease;
+      pointer-events: none;
+    }
+    .dial-preview.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe class="dial-preview" id="dial-preview" tabindex="-1"></iframe>
+
+  <div class="info-page">
+    <div class="info-page-content">
+      <div class="modal-text">
+
+        <div class="info-stage" id="info-stage-0">
+          <p>Dear Visitor,</p>
+          <p>Welcome to the ruins.</p>
+        </div>
+
+        <div class="info-stage hidden" id="info-stage-1">
+          <p>What you are about to enter is an interactive adaptation of</p>
+          <p>The Circular Ruins (1940) by Jorge Luis Borges...</p>
+        </div>
+
+        <div class="info-stage hidden" id="info-stage-2">
+          <p>The story follows a man who arrives at a ruined temple with</p>
+          <p>one purpose: to dream another person into existence.</p>
+        </div>
+
+        <div class="info-stage hidden" id="info-stage-3">
+          <p>He believes he is the creator.</p>
+          <p>He believes he is in control.</p>
+        </div>
+
+        <div class="info-stage hidden" id="info-stage-4">
+          <p>But the longer he dreams, the less certain his position becomes.</p>
+        </div>
+
+        <div class="info-stage hidden" id="info-stage-5">
+          <p>If someone can be dreamed into existence, what makes the dreamer any different?</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Preload dial iframe in background
+    var dialPreviewReady = false;
+    var dialPreview = document.getElementById('dial-preview');
+    dialPreview.onload = function() {
+      setTimeout(function() {
+        dialPreviewReady = true;
+      }, 500);
+    };
+    setTimeout(function() {
+      dialPreview.src = 'dial.html?preview=1';
+    }, 1000);
+
+    var typeSound = new Audio('typewriter.mp3');
+    typeSound.loop = true;
+    typeSound.volume = 0.5;
+    var audioUnlocked = false;
+    var currentlyTyping = false;
+
+    function unlockAudio() {
+      if (audioUnlocked) return;
+      typeSound.play().then(function() {
+        audioUnlocked = true;
+        if (!currentlyTyping) {
+          typeSound.pause();
+          typeSound.currentTime = 0;
+        }
+      }).catch(function(){});
+    }
+
+    document.addEventListener('click', unlockAudio, { once: false });
+    document.addEventListener('touchstart', unlockAudio, { once: false });
+    document.addEventListener('keydown', unlockAudio, { once: false });
+    document.addEventListener('mousemove', unlockAudio, { once: false });
+
+    function typeWriter(element, text, speed, callback) {
+      element.innerHTML = '';
+      var cursor = document.createElement('span');
+      cursor.className = 'type-cursor';
+      cursor.textContent = '';
+      element.appendChild(cursor);
+      var i = 0;
+      currentlyTyping = true;
+      typeSound.currentTime = 0;
+      typeSound.play().catch(function(){});
+      function type() {
+        if (i < text.length) {
+          cursor.remove();
+          element.textContent = text.substring(0, i + 1);
+          element.appendChild(cursor);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          cursor.remove();
+          currentlyTyping = false;
+          typeSound.pause();
+          if (callback) callback();
+        }
+      }
+      type();
+    }
+
+    var stageIds = ['info-stage-0', 'info-stage-1', 'info-stage-2', 'info-stage-3', 'info-stage-4', 'info-stage-5'];
+
+    function typeStage(stageIndex) {
+      if (stageIndex >= stageIds.length) {
+        setTimeout(function() {
+          window.location.href = 'dial.html';
+        }, 2000);
+        return;
+      }
+
+      var stage = document.getElementById(stageIds[stageIndex]);
+      if (!stage) return;
+
+      var paragraphs = stage.querySelectorAll('p');
+      var index = 0;
+
+      paragraphs.forEach(function(p) {
+        if (!p.getAttribute('data-text')) {
+          p.setAttribute('data-text', p.textContent);
+        }
+        p.textContent = '';
+      });
+
+      function typeNext() {
+        if (index < paragraphs.length) {
+          var p = paragraphs[index];
+          var text = p.getAttribute('data-text');
+          index++;
+          typeWriter(p, text, 55, typeNext);
+        } else {
+          var isLastStage = (stageIndex === stageIds.length - 1);
+          if (isLastStage) {
+            typeSound.pause();
+            setTimeout(function() {
+              if (dialPreviewReady) {
+                dialPreview.classList.add('visible');
+              }
+              
+              var infoPage = document.querySelector('.info-page');
+              if (infoPage) {
+                infoPage.style.transition = 'filter 3s ease, opacity 3s ease';
+                infoPage.style.filter = 'blur(15px)';
+                infoPage.style.opacity = '0';
+              }
+
+              document.body.style.transition = 'background 3s ease';
+              document.body.style.background = 'transparent';
+              
+              var afterStyle = document.createElement('style');
+              afterStyle.textContent = 'body::after { transition: opacity 3s ease; opacity: 0; }';
+              document.head.appendChild(afterStyle);
+
+              setTimeout(function() {
+                window.location.href = 'dial.html';
+              }, 3500);
+            }, 1500);
+            return;
+          }
+          setTimeout(function() {
+            stage.classList.add('fade-out');
+            setTimeout(function() {
+              stage.classList.add('hidden');
+              var next = stageIndex + 1;
+              if (next < stageIds.length) {
+                var nextStage = document.getElementById(stageIds[next]);
+                if (nextStage) {
+                  nextStage.classList.remove('hidden');
+                  typeStage(next);
+                }
+              } else {
+                typeStage(next);
+              }
+            }, 500);
+          }, 1500);
+        }
+      }
+      typeNext();
+    }
+
+    typeStage(0);
+  </script>
+
+  <script>
+    // Smoke cursor
+    var mouseMoveCounter = 0;
+    var maxSmoke = 15;
+    var colors = [
+      'rgba(255, 80, 0, 0.7)',
+      'rgba(255, 140, 0, 0.6)',
+      'rgba(200, 50, 0, 0.7)',
+      'rgba(255, 200, 50, 0.5)',
+      'rgba(120, 30, 0, 0.6)',
+      'rgba(80, 20, 0, 0.5)',
+      'rgba(60, 60, 60, 0.4)'
+    ];
+
+    function createSmoke(x, y) {
+      var smoke = document.createElement('div');
+      smoke.className = 'smoke';
+      var size = 50 + Math.random() * 70;
+      smoke.style.width = size + 'px';
+      smoke.style.height = size + 'px';
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      smoke.style.background = 'radial-gradient(circle, ' + color + ' 0%, transparent 70%)';
+      var offsetX = (Math.random() - 0.5) * 20;
+      var offsetY = (Math.random() - 0.5) * 20;
+      smoke.style.left = (x + offsetX) + 'px';
+      smoke.style.top = (y + offsetY) + 'px';
+      document.body.appendChild(smoke);
+
+      setTimeout(function() {
+        smoke.style.transition = 'opacity 1.5s, transform 1.5s, filter 1.5s';
+        smoke.style.opacity = '0';
+        smoke.style.transform = 'translateY(-30px) scale(2)';
+        smoke.style.filter = 'blur(20px)';
+        setTimeout(function() {
+          if (smoke.parentNode) smoke.remove();
+        }, 1500);
+      }, 50);
+
+      var allSmoke = document.querySelectorAll('.smoke');
+      if (allSmoke.length > maxSmoke) allSmoke[0].remove();
+    }
+
+    document.addEventListener('mousemove', function(e) {
+      mouseMoveCounter++;
+      if (mouseMoveCounter % 3 === 0) {
+        createSmoke(e.clientX + window.scrollX, e.clientY + window.scrollY);
+      }
+    });
+  </script>
+
+</body>
+</html>
