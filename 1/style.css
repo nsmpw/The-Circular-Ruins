@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 200;
+  box-shadow:
+    inset 100px 0 100px -30px rgba(40, 22, 12, 0.7),
+    inset -100px 0 100px -30px rgba(40, 22, 12, 0.7),
+    inset 0 100px 100px -30px rgba(40, 22, 12, 0.7),
+    inset 0 -100px 100px -30px rgba(40, 22, 12, 0.7);
+}
+
+.text-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.text-block {
+  position: absolute;
+  font-family: "Apple Chancery", cursive;
+  font-style: italic;
+  color: #000;
+  line-height: 1.6;
+  opacity: 0;
+  transition: opacity 1.5s ease, transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  max-width: 70vw;
+  pointer-events: none;
+}
+
+.swap-word {
+  transition: opacity 0.3s ease;
+}
+
+.float-word {
+  position: fixed;
+  font-family: "Apple Chancery", cursive;
+  font-style: italic;
+  color: #000;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  transition: left 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              top 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 1.2s ease;
+}
+
+.leprosy-word {
+  position: relative;
+}
+
+.leprosy-echo {
+  position: fixed;
+  font-family: "Apple Chancery", cursive;
+  font-style: italic;
+  color: #000;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0;
+  animation: leprosyPulse 2.5s ease-in-out forwards;
+}
+
+@keyframes leprosyPulse {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 0.7; }
+  50% { opacity: 0.4; transform: translate(2px, -2px); }
+  80% { opacity: 0.2; transform: translate(-1px, 1px); }
+  100% { opacity: 0; transform: translate(3px, -3px); }
+}
+
+.section-num {
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Apple Chancery", cursive;
+  font-size: clamp(11px, 1vw, 16px);
+  color: rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  z-index: 70;
+}
+
+.smoke {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.8;
+  filter: blur(8px);
+}
+
+/* ── Dial Return Button ── */
+.dial-return {
+  position: fixed;
+  top: 4vw;
+  right: 5vw;
+  font-size: 3vw;
+  color: rgba(40, 22, 12, 0.9);
+  text-decoration: none;
+  z-index: 250;
+  cursor: pointer;
+  animation: returnBlink 1.5s ease-in-out infinite;
+}
+
+@keyframes returnBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.dial-return:hover {
+  animation: none;
+  opacity: 0.5;
+}
+
+.dial-return.glow {
+  color: rgba(40, 22, 12, 1);
+  animation: returnBlink 1.5s ease-in-out infinite;
+}
+
+.text-block.breathing {
+  animation: breathe 3s ease-in-out forwards;
+}
+
+@keyframes breathe {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 10px rgba(220, 30, 30, 0.8),
+      0 0 20px rgba(180, 0, 0, 0.6),
+      0 0 40px rgba(140, 0, 0, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 15px rgba(255, 40, 40, 1),
+      0 0 30px rgba(220, 0, 0, 0.8),
+      0 0 60px rgba(180, 0, 0, 0.6);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
